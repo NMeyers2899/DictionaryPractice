@@ -1,13 +1,5 @@
 #pragma once
 
-template<typename TItemKey, typename TItemValue>
-struct Item 
-{
-public:
-	TItemKey TKey;
-	TItemValue TValue;
-};
-
 template<typename TKey, typename TValue>
 class Dictionary
 {
@@ -77,7 +69,14 @@ public:
 	Dictionary<TKey, TValue>& operator=(const Dictionary<TKey, TValue> other) const;
 
 private:
-	Item<TKey, TValue>* m_items = nullptr;
+	struct Item
+	{
+	public:
+		TKey TKey;
+		TValue TValue;
+	};
+
+	Item* m_items = nullptr;
 	int m_count = 0;
 };
 
@@ -139,7 +138,7 @@ inline bool Dictionary<TKey, TValue>::tryGetValue(const TKey key, const TValue& 
 template<typename TKey, typename TValue>
 inline void Dictionary<TKey, TValue>::addItem(const TKey& key, const TValue& value)
 {
-	Item<TKey, TValue>* tempArray = new Item<TKey, TValue>[m_count + 1];
+	Item* tempArray = new Item[m_count + 1];
 
 	for (int i = 0; i < m_count; i++) 
 	{
@@ -159,7 +158,7 @@ inline void Dictionary<TKey, TValue>::addItem(const TKey& key, const TValue& val
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::remove(const TKey key)
 {
-	Item<TKey, TValue>* tempArray = new Item<TKey, TValue>[m_count - 1];
+	Item* tempArray = new Item[m_count - 1];
 	int j = 0;
 	bool isItemRemoved = false;
 
@@ -183,7 +182,7 @@ inline bool Dictionary<TKey, TValue>::remove(const TKey key)
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::remove(const TKey key, TValue& value)
 {
-	Item<TKey, TValue>* tempArray = new Item<TKey, TValue>[m_count - 1];
+	Item* tempArray = new Item[m_count - 1];
 	int j = 0;
 	bool isItemRemoved = false;
 

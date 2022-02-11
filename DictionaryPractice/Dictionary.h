@@ -126,7 +126,7 @@ inline bool Dictionary<TKey, TValue>::tryGetValue(const TKey key, const TValue& 
 {
 	for (int i = 0; i < m_count; i++) 
 	{
-		if (m_items[i]->TKey == key) 
+		if (m_items[i].TKey == key) 
 		{
 			value = m_items[i].TValue;
 			return true;
@@ -139,7 +139,7 @@ inline bool Dictionary<TKey, TValue>::tryGetValue(const TKey key, const TValue& 
 template<typename TKey, typename TValue>
 inline void Dictionary<TKey, TValue>::addItem(const TKey& key, const TValue& value)
 {
-	Item<TKey, TValue>* tempArray[m_count + 1];
+	Item<TKey, TValue>* tempArray = new Item<TKey, TValue>[m_count + 1];
 
 	for (int i = 0; i < m_count; i++) 
 	{
@@ -159,7 +159,7 @@ inline void Dictionary<TKey, TValue>::addItem(const TKey& key, const TValue& val
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::remove(const TKey key)
 {
-	Item<TKey, TValue>* tempArray[m_count - 1];
+	Item<TKey, TValue>* tempArray = new Item<TKey, TValue>[m_count - 1];
 	int j = 0;
 	bool isItemRemoved = false;
 
@@ -183,7 +183,7 @@ inline bool Dictionary<TKey, TValue>::remove(const TKey key)
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::remove(const TKey key, TValue& value)
 {
-	Item<TKey, TValue>* tempArray[m_count - 1];
+	Item<TKey, TValue>* tempArray = new Item<TKey, TValue>[m_count - 1];
 	int j = 0;
 	bool isItemRemoved = false;
 

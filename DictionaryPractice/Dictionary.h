@@ -18,7 +18,7 @@ public:
 	/// <summary>
 	/// A deconstructor for a dictionary.
 	/// </summary>
-	~Dictionary<TKey, TValue>() {};
+	~Dictionary<TKey, TValue>();
 
 	/// <summary>
 	/// Deletes all items in the dictionary.
@@ -38,7 +38,7 @@ public:
 	/// <summary>
 	/// Attempts to find a value with a given key.
 	/// </summary>
-	bool tryGetValue(const TKey key, const TValue& value) const;
+	bool tryGetValue(const TKey key, TValue& value) const;
 
 	/// <summary>
 	/// Attempts to add an item to the dictionary.
@@ -66,7 +66,12 @@ public:
 	/// An operator that checks to see if two dictionaries are equal.
 	/// </summary>
 	/// <returns> If all elements in the dictionary are the same. </returns>
-	Dictionary<TKey, TValue>& operator=(const Dictionary<TKey, TValue> other) const;
+	const Dictionary<TKey, TValue>& operator=(Dictionary<TKey, TValue> other);
+
+	/// <summary>
+	/// Takes in a key and returns the value of that key if it could be found.
+	/// </summary>
+	TValue operator[](const TKey key);
 
 private:
 	struct Item
@@ -88,10 +93,16 @@ inline Dictionary<TKey, TValue>::Dictionary(const Dictionary<TKey, TValue>& othe
 }
 
 template<typename TKey, typename TValue>
+inline Dictionary<TKey, TValue>::~Dictionary()
+{
+	clear();
+}
+
+template<typename TKey, typename TValue>
 inline void Dictionary<TKey, TValue>::clear()
 {
-	for (int i = 0; i < m_count; i++)
-		delete m_items[i];
+	for (int i = 0; i < getCount(); i++)
+		remove(m_items[i].TKey, m_items[i].TValue);
 
 	m_count = 0;
 }
@@ -99,7 +110,7 @@ inline void Dictionary<TKey, TValue>::clear()
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::containsKey(const TKey object) const
 {
-	for (int i = 0; i < m_count; i++) 
+	for (int i = 0; i < getCount(); i++) 
 	{
 		if (m_items[i].TKey == object)
 			return true;
@@ -111,7 +122,7 @@ inline bool Dictionary<TKey, TValue>::containsKey(const TKey object) const
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::containsValue(const TValue object) const
 {
-	for (int i = 0; i < m_count; i++) 
+	for (int i = 0; i < getCount(); i++) 
 	{
 		if (m_items[i].TValue == object)
 			return true;
@@ -121,9 +132,9 @@ inline bool Dictionary<TKey, TValue>::containsValue(const TValue object) const
 }
 
 template<typename TKey, typename TValue>
-inline bool Dictionary<TKey, TValue>::tryGetValue(const TKey key, const TValue& value) const
+inline bool Dictionary<TKey, TValue>::tryGetValue(const TKey key, TValue& value) const
 {
-	for (int i = 0; i < m_count; i++) 
+	for (int i = 0; i < getCount(); i++) 
 	{
 		if (m_items[i].TKey == key) 
 		{
@@ -138,9 +149,9 @@ inline bool Dictionary<TKey, TValue>::tryGetValue(const TKey key, const TValue& 
 template<typename TKey, typename TValue>
 inline void Dictionary<TKey, TValue>::addItem(const TKey& key, const TValue& value)
 {
-	Item* tempArray = new Item[m_count + 1];
+	Item* tempArray = new Item[getCount() + 1];
 
-	for (int i = 0; i < m_count; i++) 
+	for (int i = 0; i < getCount(); i++) 
 	{
 		if (m_items[i].TKey == key)
 			return;
@@ -148,8 +159,8 @@ inline void Dictionary<TKey, TValue>::addItem(const TKey& key, const TValue& val
 		tempArray[i] = m_items[i];
 	}
 
-	tempArray[m_count].TKey = key;
-	tempArray[m_count].TValue = value;
+	tempArray[getCount()].TKey = key;
+	tempArray[getCount()].TValue = value;
 
 	m_items = tempArray;
 	m_count++;
@@ -158,11 +169,18 @@ inline void Dictionary<TKey, TValue>::addItem(const TKey& key, const TValue& val
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::remove(const TKey key)
 {
-	Item* tempArray = new Item[m_count - 1];
+	// If there are no items in the list...
+	if (getCount() <= 0)
+		// ...return false.
+		return false;
+
+	// Creates a temporary array, a variable to track the iteration of the second list, and a bool
+	// to keep track of if an item was removed or not.
+	Item* tempArray = new Item[getCount() - 1];
 	int j = 0;
 	bool isItemRemoved = false;
 
-	for (int i = 0; i < m_count; i++) 
+	for (int i = 0; i < getCount(); i++) 
 	{
 		if (m_items[i].TKey != key)
 		{
@@ -182,19 +200,29 @@ inline bool Dictionary<TKey, TValue>::remove(const TKey key)
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::remove(const TKey key, TValue& value)
 {
-	Item* tempArray = new Item[m_count - 1];
+	// If there are no items in the list...
+	if (getCount() <= 0)
+		// ...return false.
+		return false;
+
+	// Creates a temporary array, a variable to track the iteration of the second list, and a bool
+	// to keep track of if an item was removed or not.
+	Item* tempArray = new Item[getCount() - 1];
 	int j = 0;
 	bool isItemRemoved = false;
 
-	for (int i = 0; i < m_count; i++)
+	for (int i = 0; i < getCount(); i++)
 	{
-		if (m_items[i].TKey != key && m_items[i].TValue != value)
+		if (m_items[i].TKey != key)
 		{
 			tempArray[j] = m_items[i];
 			j++;
 		}
-		else
+		else 
+		{
+			value = m_items[i].TValue;
 			isItemRemoved = true;
+		}
 	}
 
 	m_items = tempArray;
@@ -210,12 +238,31 @@ inline int Dictionary<TKey, TValue>::getCount() const
 }
 
 template<typename TKey, typename TValue>
-inline Dictionary<TKey, TValue>& Dictionary<TKey, TValue>::operator=(const Dictionary<TKey, TValue> other) const
+inline const Dictionary<TKey, TValue>& Dictionary<TKey, TValue>::operator=(Dictionary<TKey, TValue> other)
 {
-	for (int i = 0; i < other.m_count; i++)
-		m_items[i] = other.m_items[i];
+	// Clears the list to add the new elements into it.
+	clear();
 
-	m_count = other.m_count;
+	// For each element of the other's list, it adds those items to this one's list.
+	for (int i = 0; i < other.getCount(); i++)
+		addItem(other.m_items[i].TKey, other.m_items[i].TValue);
 
-	return this;
+	// Sets this one's count equal to the other's count.
+	m_count = other.getCount();
+
+	return other;
+}
+
+template<typename TKey, typename TValue>
+inline TValue Dictionary<TKey, TValue>::operator[](const TKey key)
+{
+	TValue value;
+	// If the key can be found...
+	if (tryGetValue(key, value))
+		// ...return the value found at that key.
+		return value;
+	// If it cannot be found...
+	else 
+		// ...return an empty value.
+		return TValue();
 }

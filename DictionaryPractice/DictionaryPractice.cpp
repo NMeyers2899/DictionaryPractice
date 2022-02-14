@@ -3,14 +3,21 @@
 
 int main()
 {
-    Dictionary<char, int> dictionary = Dictionary<char, int>();
-    dictionary.clear();
-    dictionary.addItem('c', 6);
-    dictionary.addItem('a', 3);
-    dictionary.remove('a');
-    dictionary.remove('a');
-    dictionary.addItem('v', 15);
-    int value = 0;
-    dictionary.remove('a', value);
-    std::cout << value << std::endl;
+    // Creating an empty dictionary.
+    Dictionary<int, char> dictionary = Dictionary<int, char>();
+    Dictionary<int, char> dictionary2 = Dictionary<int, char>();
+
+    // Proof of adding keys and values.
+    dictionary.addItem(1, 'a');
+    dictionary.addItem(2, 'c');
+
+    // Should print out a.
+    std::cout << dictionary[1] << std::endl;
+
+    // Can remove elements and removing something that is not there will not break the list.
+    char value;
+    dictionary.remove(2, value);
+    // Should print out "Removed value was c".
+    std::cout << "Removed value was " << value << std::endl;
+    dictionary.remove(2);
 }

@@ -66,7 +66,7 @@ public:
 	/// An operator that checks to see if two dictionaries are equal.
 	/// </summary>
 	/// <returns> If all elements in the dictionary are the same. </returns>
-	const Dictionary<TKey, TValue>& operator=(Dictionary<TKey, TValue> other);
+	const Dictionary<TKey, TValue>& operator=(Dictionary<TKey, TValue>& other);
 
 	/// <summary>
 	/// Takes in a key and returns the value of that key if it could be found.
@@ -101,8 +101,9 @@ inline Dictionary<TKey, TValue>::~Dictionary()
 template<typename TKey, typename TValue>
 inline void Dictionary<TKey, TValue>::clear()
 {
+	// Goes through the list and removed each element within.
 	for (int i = 0; i < getCount(); i++)
-		remove(m_items[i].TKey, m_items[i].TValue);
+		remove(m_items[i].TKey);
 
 	m_count = 0;
 }
@@ -110,9 +111,12 @@ inline void Dictionary<TKey, TValue>::clear()
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::containsKey(const TKey object) const
 {
+	// Searches through the list.
 	for (int i = 0; i < getCount(); i++) 
 	{
+		// If the key is the same as the object...
 		if (m_items[i].TKey == object)
+			// ...return that the item has been found.
 			return true;
 	}
 
@@ -122,9 +126,12 @@ inline bool Dictionary<TKey, TValue>::containsKey(const TKey object) const
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::containsValue(const TValue object) const
 {
+	// Searches through the list.
 	for (int i = 0; i < getCount(); i++) 
 	{
+		// If the value is the same as the object...
 		if (m_items[i].TValue == object)
+			// ...return that the item has been found.
 			return true;
 	}
 
@@ -134,10 +141,13 @@ inline bool Dictionary<TKey, TValue>::containsValue(const TValue object) const
 template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::tryGetValue(const TKey key, TValue& value) const
 {
+	// Searches through the list.
 	for (int i = 0; i < getCount(); i++) 
 	{
+		// If the value is the same as the object...
 		if (m_items[i].TKey == key) 
 		{
+			// ...sets the value equal to the value associated with the key.
 			value = m_items[i].TValue;
 			return true;
 		}
@@ -149,19 +159,25 @@ inline bool Dictionary<TKey, TValue>::tryGetValue(const TKey key, TValue& value)
 template<typename TKey, typename TValue>
 inline void Dictionary<TKey, TValue>::addItem(const TKey& key, const TValue& value)
 {
+	// Creates a temporary array with one more indicies than the original items list.
 	Item* tempArray = new Item[getCount() + 1];
 
 	for (int i = 0; i < getCount(); i++) 
 	{
+		// If there is a key in the list with the same value as the given key...
 		if (m_items[i].TKey == key)
+			// ...return from the list.
 			return;
 
+		// Copies each value from the old list into the new one.
 		tempArray[i] = m_items[i];
 	}
 
+	// Sets the last element of the new array equal to the given key and value.
 	tempArray[getCount()].TKey = key;
 	tempArray[getCount()].TValue = value;
 
+	// Sets the old items array equal to the temporary array and increments the count.
 	m_items = tempArray;
 	m_count++;
 }
@@ -182,15 +198,20 @@ inline bool Dictionary<TKey, TValue>::remove(const TKey key)
 
 	for (int i = 0; i < getCount(); i++) 
 	{
+		// As long as the item is not the same as the given key...
 		if (m_items[i].TKey != key)
 		{
+			// ...copy the elements of the original list into the temporary array and increment j.
 			tempArray[j] = m_items[i];
 			j++;
 		}
+		// If it is the same...
 		else
+			// ...skips incrementing j and sets isItemRemoved to true.
 			isItemRemoved = true;
 	}
 
+	// Sets the items array to the temporary array and decrements the count.
 	m_items = tempArray;
 	m_count--;
 
@@ -213,18 +234,24 @@ inline bool Dictionary<TKey, TValue>::remove(const TKey key, TValue& value)
 
 	for (int i = 0; i < getCount(); i++)
 	{
+		// As long as the item is not the same as the given key...
 		if (m_items[i].TKey != key)
 		{
+			// ...copy the elements of the original list into the temporary array and increment j.
 			tempArray[j] = m_items[i];
 			j++;
 		}
+		// If it is the same...
 		else 
 		{
+			// ...skips incrementing j, sets isItemRemoved to true and sets the given value to be
+			// the value at that key.
 			value = m_items[i].TValue;
 			isItemRemoved = true;
 		}
 	}
 
+	// Sets the items array to the temporary array and decrements the count.
 	m_items = tempArray;
 	m_count--;
 
@@ -238,7 +265,7 @@ inline int Dictionary<TKey, TValue>::getCount() const
 }
 
 template<typename TKey, typename TValue>
-inline const Dictionary<TKey, TValue>& Dictionary<TKey, TValue>::operator=(Dictionary<TKey, TValue> other)
+inline const Dictionary<TKey, TValue>& Dictionary<TKey, TValue>::operator=(Dictionary<TKey, TValue>& other)
 {
 	// Clears the list to add the new elements into it.
 	clear();

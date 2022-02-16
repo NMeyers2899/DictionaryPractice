@@ -100,7 +100,7 @@ inline Dictionary<TKey, TValue>::~Dictionary()
 template<typename TKey, typename TValue>
 inline void Dictionary<TKey, TValue>::clear()
 {
-	// Goes through the list and removed each element within.
+	// Goes through the list and removes each element within.
 	for (int i = 0; i < getCount(); i++)
 		remove(m_items[i].TKey);
 

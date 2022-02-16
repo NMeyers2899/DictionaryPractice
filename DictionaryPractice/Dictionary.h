@@ -65,7 +65,6 @@ public:
 	/// <summary>
 	/// An operator that checks to see if two dictionaries are equal.
 	/// </summary>
-	/// <returns> If all elements in the dictionary are the same. </returns>
 	const Dictionary<TKey, TValue>& operator=(Dictionary<TKey, TValue>& other);
 
 	/// <summary>

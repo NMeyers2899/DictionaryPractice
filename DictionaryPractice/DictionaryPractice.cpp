@@ -9,12 +9,18 @@ int main()
     // Proof of adding keys and values.
     dictionary.addItem(1, 'a');
     dictionary.addItem(2, 'c');
+    system("pause");
+    system("cls");
 
     // Should print out a.
     std::cout << dictionary[1] << std::endl;
+    system("pause");
+    system("cls");
 
     // Gets the size of the list and displays it to the screen.
     std::cout << "Size of list : " << dictionary.getCount() << std::endl;
+    system("pause");
+    system("cls");
 
     // Demonstrates that the dictionary can find keys.
     if (dictionary.containsKey(1))
@@ -24,6 +30,9 @@ int main()
     if (dictionary.containsValue('a'))
         std::cout << "Contains Value : a" << std::endl;
 
+    system("pause");
+    system("cls");
+
     // Can remove elements and removing something that is not there will not break the list.
     char value;
     dictionary.remove(2, value);
@@ -32,4 +41,7 @@ int main()
 
     // Gets the size of the list again to show the user that it has changed.
     std::cout << "Size of list : " << dictionary.getCount() << std::endl;
+
+    system("pause");
+    system("cls");
 }

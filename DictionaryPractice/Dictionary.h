@@ -212,7 +212,9 @@ inline bool Dictionary<TKey, TValue>::remove(const TKey key)
 
 	// Sets the items array to the temporary array and decrements the count.
 	m_items = tempArray;
-	m_count--;
+
+	if (isItemRemoved)
+		m_count--;
 
 	return isItemRemoved;
 }
@@ -252,7 +254,9 @@ inline bool Dictionary<TKey, TValue>::remove(const TKey key, TValue& value)
 
 	// Sets the items array to the temporary array and decrements the count.
 	m_items = tempArray;
-	m_count--;
+
+	if (isItemRemoved)
+		m_count--;
 
 	return isItemRemoved;
 }
